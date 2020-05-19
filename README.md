@@ -3,6 +3,8 @@
 Forked repo from [ABD-Net](<https://github.com/TAMU-VITA/ABD-Net>).  
 For details and original repo look [here](<https://github.com/theodorhusefest/ABD-Net/blob/master/README_ORIG.md>).
 
+The following instructions is meant for running on EPFL clusters.
+
 ### Installation
  The first 2 steps are already done in the folder "scratch/husefest/".
 
