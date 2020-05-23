@@ -11,6 +11,8 @@ For details and original repo look [here](<https://github.com/theodorhusefest/AB
 3. Create a folder ```data``` containing the msmst17-dataset
 4. Create a folder ```checkpoints``` for training
 4. Activate virtualenv with ```source <env-name>/bin/activate```
+5. Run ```pip install -r requirements.txt``` to install packages
+6. Go into ```cd torchreid/eval_cylib``` and run ```make```
 
 ### Training
 
