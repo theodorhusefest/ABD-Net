@@ -121,6 +121,7 @@ def main():
             print("Evaluating {} ...".format(name))
             queryloader = testloader_dict[name]['query'], testloader_dict[name]['query_flip']
             galleryloader = testloader_dict[name]['gallery'], testloader_dict[name]['gallery_flip']
+            print(queryloader, galleryloader)
             distmat = test(model, queryloader, galleryloader, use_gpu, return_distmat=True)
 
             if args.visualize_ranks:
@@ -288,6 +289,7 @@ def test(model, queryloader, galleryloader, use_gpu, ranks=[1, 5, 10, 20], retur
 
         if flip_eval:
             enumerator = enumerate(zip(queryloader[0], queryloader[1]))
+            
         else:
             enumerator = enumerate(queryloader[0])
 

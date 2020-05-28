@@ -1,5 +1,5 @@
 Cython
-PIL
+pandas
 h5py
 numpy
 Pillow

@@ -14,6 +14,7 @@ from .cuhk01 import CUHK01
 from .prid450s import PRID450S
 from .ilids import iLIDS
 from .sensereid import SenseReID
+from .pedestrianreid import PedestrianReID
 
 from .mars import Mars
 from .ilidsvid import iLIDSVID
@@ -33,6 +34,7 @@ __imgreid_factory = {
     'prid450s': PRID450S,
     'ilids': iLIDS,
     'sensereid': SenseReID,
+    'pedestrianreid': PedestrianReID,
 }
 
 

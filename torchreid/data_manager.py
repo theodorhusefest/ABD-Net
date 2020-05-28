@@ -25,12 +25,82 @@ class BaseDataManager(object):
         """
         return self.trainloader, self.testloader_dict
 
+    def return_testloader(self):
+        """
+        Returns only testloader dictionary
+        """
+        return self.testloader_dict
+
+
     def return_testdataset_by_name(self, name):
         """
         Return query and gallery, each containing a list of (img_path, pid, camid).
         """
         return self.testdataset_dict[name]['query'], self.testdataset_dict[name]['gallery'],\
             self.testdataset_dict[name]['query_flip'], self.testdataset_dict[name]['gallery_flip']
+
+
+class SimpleImageDataManager(BaseDataManager):
+    """
+    Datamanager used only for testing 
+    """ 
+    
+    def __init__(self,
+                use_gpu,
+                target_names,
+                root,
+                split_id = 0,
+                height=256,
+                width=128,
+                test_batch_size=100,
+                workers=4,
+                data_augment='none',
+                cuhk03_labeled = False,
+                cuhk03_classic_split = False,
+                ):
+        super(SimpleImageDataManager, self).__init__()
+        self.use_gpu = use_gpu
+        self.target_names = target_names
+        self.root = root
+        self.split_id = split_id
+        self.height = height
+        self.width = width
+        self.test_batch_size = test_batch_size
+        self.workers = workers
+        self.data_augment = data_augment
+        self.cuhk03_labeled = cuhk03_labeled
+        self.cuhk03_classic_split = cuhk03_classic_split
+        self.pin_memory = True if use_gpu else False
+
+        print("Making transforms")
+        transform_test = build_transforms(self.height, self.width, is_train=False, data_augment=data_augment)
+
+        print("Initializing dataset for testing")
+        self.testloader_dict = {name: {'query': None, 'gallery': None} for name in self.target_names}
+        self.testdataset_dict = {name: {'query': None, 'gallery': None} for name in self.target_names}
+
+        for name in self.target_names:
+            dataset = init_imgreid_dataset(
+                root=self.root, name=name, split_id=self.split_id, cuhk03_labeled=self.cuhk03_labeled,
+                cuhk03_classic_split=self.cuhk03_classic_split
+            )
+
+            self.testloader_dict[name]['query'] = DataLoader(
+                ImageDataset(dataset.query, transform=transform_test),
+                batch_size=self.test_batch_size, shuffle=False, num_workers=self.workers,
+                pin_memory=self.pin_memory, drop_last=False
+            )
+
+            self.testloader_dict[name]['gallery'] = DataLoader(
+                ImageDataset(dataset.gallery, transform=transform_test),
+                batch_size=self.test_batch_size, shuffle=False, num_workers=self.workers,
+                pin_memory=self.pin_memory, drop_last=False
+            )
+
+            self.testdataset_dict[name]['query'] = dataset.query
+            self.testdataset_dict[name]['gallery'] = dataset.gallery
+            
+
 
 
 class ImageDataManager(BaseDataManager):
@@ -148,6 +218,7 @@ class ImageDataManager(BaseDataManager):
 
             self.testdataset_dict[name]['query'] = dataset.query
             self.testdataset_dict[name]['gallery'] = dataset.gallery
+            
 
         print("\n")
         print("  **************** Summary ****************")

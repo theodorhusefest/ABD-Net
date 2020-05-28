@@ -34,6 +34,7 @@ class Market1501(BaseImageDataset):
 
     def __init__(self, root='data', verbose=True, **kwargs):
         super(Market1501, self).__init__()
+        print("CREATING MARKET1501")
         self.dataset_dir = osp.join(root, self.dataset_dir)
         self.train_dir = osp.join(self.dataset_dir, 'bounding_box_train')
         self.query_dir = osp.join(self.dataset_dir, 'query')
@@ -75,6 +76,7 @@ class Market1501(BaseImageDataset):
         pid_container = set()
         for img_path in img_paths:
             pid, _ = map(int, pattern.search(img_path).groups())
+            print("PID IN PROCESS DIR", pid)
             if pid == -1 and os.environ.get('junk') is None:
                 continue  # junk images are just ignored
             pid_container.add(pid)
