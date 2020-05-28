@@ -36,8 +36,7 @@ class BaseDataManager(object):
         """
         Return query and gallery, each containing a list of (img_path, pid, camid).
         """
-        return self.testdataset_dict[name]['query'], self.testdataset_dict[name]['gallery'],\
-            self.testdataset_dict[name]['query_flip'], self.testdataset_dict[name]['gallery_flip']
+        return self.testdataset_dict[name]['query'], self.testdataset_dict[name]['gallery']
 
 
 class SimpleImageDataManager(BaseDataManager):
