@@ -129,8 +129,8 @@ def main():
         model_dict.update(pretrain_dict)
         model.load_state_dict(model_dict)
         print("Loaded pretrained weights from '{}'".format(args.load_weights))
-
-    model = model.cuda()
+	
+    model = model.cuda() if use_gpu else model
     print("Staring ReID")
     for name in args.target_names:
         queryloader = testloader_dict[name]['query']
