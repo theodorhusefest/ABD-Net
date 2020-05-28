@@ -12,21 +12,11 @@ import numpy as np
 from args import argument_parser, optimizer_kwargs
 from torchreid import models
 from torchreid.data_manager import SimpleImageDataManager
-from torchreid.utils.reidtools import visualize_ranked_results
+from torchreid.utils.reidtools import visualize_ranked_results, choose_images
 
 parser = argument_parser()
 args = parser.parse_args()
 
-"""
-def argument_parser():
-    parser= argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-
-    parser.add_argument('--data', type=str, help="directory for yolo-images")
-
-
-def create_dataset():
-
-"""
 
 def simple_image_dataset_kwargs(parsed_args): 
     """
@@ -36,7 +26,6 @@ def simple_image_dataset_kwargs(parsed_args):
         'target_names': parsed_args.target_names,
         'root': parsed_args.root,
     }
-
 
 
 def classify_images(model, queryloader, galleryloader, use_gpu):
@@ -100,7 +89,6 @@ def classify_images(model, queryloader, galleryloader, use_gpu):
         distmat = distmat.numpy()
 
         return distmat
-
             
 
 def main():
@@ -137,8 +125,7 @@ def main():
         galleryloader = testloader_dict[name]['gallery']
         distmat = classify_images(model, queryloader, galleryloader, use_gpu)
 
-        visualize_ranked_results(distmat, dm.return_testdataset_by_name(name),
-        save_dir= osp.join(args.save_dir, 'ranked_results', name), topk=5)
+        choose_images(distmat, dm.return_testdataset_by_name(name))
 
 
 if __name__ == "__main__":

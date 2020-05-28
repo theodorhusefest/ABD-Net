@@ -8,6 +8,54 @@ import shutil
 
 from .iotools import mkdir_if_missing
 
+def choose_images(distmat, dataset, save_dir='./log/chosen_results', max_distance=200):
+    """
+    Choose images with low enough distance 'max_distance'
+    
+    Args:
+    - distmat: distance matrix
+    - dataset: 2-tuple containg (query, gallery), each contains a list of img_path, pid, camid
+    - save_dir
+    - max_distance
+    """
+    print("Started sorting images")
+
+    mkdir_if_missing(save_dir)
+
+    max_distance = distmat.mean()/2
+    candidates = np.argwhere(distmat < max_distance)
+
+    pid_dict = {}
+    processed_images = set()
+    num_images = 0 
+    for cand in candidates:
+        
+        if (cand[0] > cand[1]) or (cand[0] in processed_images):
+            # This means we are under the diagonal or we have added this image before, will create duplicates
+            continue
+
+        if cand[0] == cand[1]: # Query = gallery
+            pid = cand[0]
+            pid_dict[pid] = [pid]
+            
+            person_dir = osp.join(save_dir, "person{}".format(pid))
+            mkdir_if_missing(person_dir)
+            img_path = dataset[0][cand[0]][0]
+            shutil.copy(img_path, person_dir + "/image{}.png".format(cand[0]))
+            num_images += 1
+
+        elif pid == cand[0]: # Candicate in gallery
+            pid_dict[pid].append(cand[1])
+            person_dir = osp.join(save_dir, "person{}".format(pid))
+            img_path = dataset[0][cand[1]][0]
+            shutil.copy(img_path, person_dir + "/image{}.png".format(cand[1]))
+            processed_images.add(cand[1])
+            num_images += 1
+ 
+    assert (num_images == len(dataset[0]))
+    print("Sorted {} images, {} images in total".format(num_images, len(dataset[0])))
+
+    
 
 def visualize_ranked_results(distmat, dataset, save_dir='log/ranked_results', topk=20):
     """

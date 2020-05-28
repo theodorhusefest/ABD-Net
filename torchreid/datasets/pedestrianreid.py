@@ -11,7 +11,9 @@ class PedestrianReID(BaseImageDataset):
         self.query = pd.read_csv(osp.join(self.dataset_dir, 'yolov3_outputs/query_list.csv'))
         self.gallery = pd.read_csv(osp.join(self.dataset_dir, 'yolov3_outputs/gallery_list.csv'))
 
+        print("\nquery images")
         query = self._process_dir(self.images, self.query)
+        print("\ngallery images")
         gallery = self._process_dir(self.images, self.query)
 
         if verbose:
@@ -19,17 +21,17 @@ class PedestrianReID(BaseImageDataset):
 
         self.query = query
         self.gallery = gallery
-        print(query[0])
 
     def _process_dir(self, dir_path, datasheet):
         
         dataset = []
-        max_images = 50
+        max_images = 11
         i = 0
         for _, row in datasheet.iterrows():
             img_path, pid, camid = row['file_path'], - 1, row['image_id']
             dataset.append((img_path, pid, camid ))
             i-=-1
+            print(img_path, pid, camid)
             if i > max_images:
                 return dataset
         return dataset
