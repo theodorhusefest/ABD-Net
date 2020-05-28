@@ -138,7 +138,7 @@ def main():
         distmat = classify_images(model, queryloader, galleryloader, use_gpu)
 
         visualize_ranked_results(distmat, dm.return_testdataset_by_name(name),
-        save_dir= osp.join(args.save_dir, 'ranked_results', name), topk=5)
+        save_dir= osp.join(args.save_dir, 'ranked_results', name), topk=20)
 
 
 if __name__ == "__main__":
