@@ -24,8 +24,12 @@ class PedestrianReID(BaseImageDataset):
     def _process_dir(self, dir_path, datasheet):
         
         dataset = []
-
+        max_images = 50
+        i = 0
         for _, row in datasheet.iterrows():
             img_path, pid, camid = row['file_path'], - 1, row['image_id']
             dataset.append((img_path, pid, camid ))
+            i-=-1
+            if i > max_images:
+                return dataset
         return dataset
