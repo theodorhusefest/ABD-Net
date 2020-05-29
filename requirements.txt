@@ -3,6 +3,9 @@ pandas
 h5py
 numpy
 Pillow
+opencv-python
+natsort
+matplotlib
 scipy>=1.0.0
 torch==1.2.0
 torchvision==0.2.1
