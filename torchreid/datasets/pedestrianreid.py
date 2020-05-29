@@ -9,15 +9,13 @@ class PedestrianReID(BaseImageDataset):
         self.dataset_dir = osp.join(root, video)
         self.images = osp.join(self.dataset_dir, 'yolov3_outputs/pedestrian_images')
         self.query = pd.read_csv(osp.join(self.dataset_dir, 'yolov3_outputs/query_list.csv'))
-        self.gallery = pd.read_csv(osp.join(self.dataset_dir, 'yolov3_outputs/gallery_list.csv'))
 
-        print("\nquery images")
         query = self._process_dir(self.images, self.query)
-        print("\ngallery images")
         gallery = self._process_dir(self.images, self.query)
 
         if verbose:
-            print("=> {} images loaded".format(video))
+            print("\n=> {} images loaded".format(video))
+            print("Loaded {} images".format(len(query)))
 
         self.query = query
         self.gallery = gallery

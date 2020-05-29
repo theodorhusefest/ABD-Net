@@ -25,6 +25,7 @@ def argument_parser():
     parser.add_argument('--train-sampler', type=str, default='',
                         help="sampler for trainloader")
     parser.add_argument('--data-augment', type=str, nargs='+', choices=['none', 'crop', 'random-erase', 'color-jitter', 'crop,random-erase', 'crop,color-jitter', 'crop,color-jitter,random-erase'], default='crop')
+    parser.add_argument('--video', type= str, default='video_1', choices= ['video_1', 'video_2', 'video_3'])
     # ************************************************************
     # Video datasets
     # ************************************************************

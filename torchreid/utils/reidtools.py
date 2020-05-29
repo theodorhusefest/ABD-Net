@@ -2,13 +2,14 @@ from __future__ import absolute_import
 from __future__ import print_function
 
 import numpy as np
+import pandas as pd
 import os
 import os.path as osp
 import shutil
 
 from .iotools import mkdir_if_missing
 
-def choose_images(distmat, dataset, save_dir='./log/chosen_results', max_distance=200):
+def choose_images(distmat, dataset, save_dir='./output/', video='video_1'):
     """
     Choose images with low enough distance 'max_distance'
     
@@ -16,42 +17,56 @@ def choose_images(distmat, dataset, save_dir='./log/chosen_results', max_distanc
     - distmat: distance matrix
     - dataset: 2-tuple containg (query, gallery), each contains a list of img_path, pid, camid
     - save_dir
-    - max_distance
     """
-    print("Started sorting images")
+    print("\Started sorting images")
 
-    mkdir_if_missing(save_dir)
+    datasheet = pd.read_csv("./data/milestone3/{}/yolov3_outputs/query_list.csv".format(video))
+    datasheet['pid'] = -1
+
+    mkdir_if_missing(osp.join(save_dir, video))
 
     max_distance = distmat.mean()/2
-    candidates = np.argwhere(distmat < max_distance)
+    matched_images = np.argwhere(distmat < max_distance)
 
-    pid_dict = {}
     processed_images = set()
     num_images = 0 
-    for cand in candidates:
-        
-        if (cand[0] > cand[1]) or (cand[0] in processed_images) or (cand[1] in processed_images):
+    for matched_image in matched_images:
+        gallery_img, query_img = matched_image
+
+        if (gallery_img > query_img) or (gallery_img in processed_images) or (query_img in processed_images):
             # This means we are under the diagonal or we have added this image before, will create duplicates
             continue
 
-        if cand[0] == cand[1]: # Query = gallery
-            pid = cand[0]
-            pid_dict[pid] = [pid]
-            
-            person_dir = osp.join(save_dir, "person{}".format(pid))
+        if gallery_img == query_img:
+            """
+            If we find a person that has not been seen, we create a new pid and folder
+            """
+
+            pid = gallery_img
+            person_dir = osp.join(save_dir, video, "person{}".format(pid))
             mkdir_if_missing(person_dir)
-            img_path = dataset[0][cand[0]][0]
-            shutil.copy(img_path, person_dir + "/image{}.png".format(cand[0]))
+
+            img_path = dataset[0][gallery_img][0]
+            datasheet.loc[datasheet['file_path'] == img_path, 'pid'] = pid
+
+            shutil.copy(img_path, person_dir + "/image{}.png".format(gallery_img))
             num_images += 1
 
-        elif pid == cand[0]: # Candicate in gallery
-            pid_dict[pid].append(cand[1])
-            person_dir = osp.join(save_dir, "person{}".format(pid))
-            img_path = dataset[0][cand[1]][0]
-            shutil.copy(img_path, person_dir + "/image{}.png".format(cand[1]))
-            processed_images.add(cand[1])
+        elif pid == gallery_img:
+            """
+            If the query image is assosiated with 
+            """
+            
+            person_dir = osp.join(save_dir, video, "person{}".format(pid))
+            img_path = dataset[0][query_img][0]
+            datasheet.loc[datasheet['file_path'] == img_path, 'pid'] = pid
+
+            shutil.copy(img_path, person_dir + "/image{}.png".format(query_img))
+
+            processed_images.add(query_img)
             num_images += 1
  
+    datasheet.to_csv( osp.join(save_dir,video) + "/{}_data.csv".format(video) )
     print("Sorted {} images, {} images in total".format(num_images, len(dataset[0])))
     
 

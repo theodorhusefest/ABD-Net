@@ -25,6 +25,7 @@ def simple_image_dataset_kwargs(parsed_args):
     return {
         'target_names': parsed_args.target_names,
         'root': parsed_args.root,
+        'video': parsed_args.video,
     }
 
 
@@ -92,16 +93,15 @@ def classify_images(model, queryloader, galleryloader, use_gpu):
             
 
 def main():
-    "Started Main"
     global args
 
     use_gpu = True if torch.cuda.is_available() else False
 
-    print("Initializing DataManager")
+    print("\nInitializing DataManager")
     dm = SimpleImageDataManager(use_gpu, **simple_image_dataset_kwargs(args))
     testloader_dict = dm.return_testloader()
 
-    print("Initializing Model")
+    print("\nInitializing Model")
     model = models.init_model(name= 'resnet50', num_classes = 30, loss= {'xent'}, use_gpu=use_gpu, args=vars(args))
 
     if args.load_weights:
@@ -116,16 +116,16 @@ def main():
         pretrain_dict = {k: v for k, v in pretrain_dict.items() if k in model_dict and model_dict[k].size() == v.size()}
         model_dict.update(pretrain_dict)
         model.load_state_dict(model_dict)
-        print("Loaded pretrained weights from '{}'".format(args.load_weights))
+        print("\nLoaded pretrained weights from '{}'".format(args.load_weights))
 	
     model = model.cuda() if use_gpu else model
-    print("Staring ReID")
+    print("\nStarting ReID")
     for name in args.target_names:
         queryloader = testloader_dict[name]['query']
         galleryloader = testloader_dict[name]['gallery']
         distmat = classify_images(model, queryloader, galleryloader, use_gpu)
 
-        choose_images(distmat, dm.return_testdataset_by_name(name))
+        choose_images(distmat, dm.return_testdataset_by_name(name), save_dir= args.save_dir, video= args.video)
 
 
 if __name__ == "__main__":
