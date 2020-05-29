@@ -30,7 +30,7 @@ def choose_images(distmat, dataset, save_dir='./log/chosen_results', max_distanc
     num_images = 0 
     for cand in candidates:
         
-        if (cand[0] > cand[1]) or (cand[0] in processed_images):
+        if (cand[0] > cand[1]) or (cand[0] in processed_images) or (cand[1] in processed_images):
             # This means we are under the diagonal or we have added this image before, will create duplicates
             continue
 
@@ -52,9 +52,7 @@ def choose_images(distmat, dataset, save_dir='./log/chosen_results', max_distanc
             processed_images.add(cand[1])
             num_images += 1
  
-    assert (num_images == len(dataset[0]))
     print("Sorted {} images, {} images in total".format(num_images, len(dataset[0])))
-
     
 
 def visualize_ranked_results(distmat, dataset, save_dir='log/ranked_results', topk=20):
