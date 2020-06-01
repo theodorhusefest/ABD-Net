@@ -26,18 +26,16 @@ def simple_image_dataset_kwargs(parsed_args):
         'target_names': parsed_args.target_names,
         'root': parsed_args.root,
         'video': parsed_args.video,
+        'csv': parsed_args.csv,
     }
 
 
 def classify_images(model, queryloader, galleryloader, use_gpu):
     """
-    Query: Un-processed images/persons
-    Gallery: Processed images/persons
-    PseudoCode
-    1. Load model 
+    1. Load model and dataloaders
     2. Use queryloader to get next query image
     3. Compare the queryimage with gallery and get a prediction
-    5. Select a rank and give same ID to this rank
+    4. Use distance-matrix to classify the most probable id
     """
     model.eval()
     pass

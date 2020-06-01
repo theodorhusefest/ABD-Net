@@ -4,11 +4,14 @@ from torchreid.datasets.bases import BaseImageDataset
 
 class PedestrianReID(BaseImageDataset):
     
-    def __init__(self, root='./data/milestone3', video='video_1', verbose=True, **kwargs):
+    def __init__(self, root='./data/milestone3', video='video_1', csv=None, verbose=True, **kwargs):
         super(PedestrianReID, self).__init__()
         self.dataset_dir = osp.join(root, video)
         self.images = osp.join(self.dataset_dir, 'yolov3_outputs/pedestrian_images')
-        self.query = pd.read_csv(osp.join(self.dataset_dir, 'yolov3_outputs/query_list.csv'))
+        if not csv:
+            self.query = pd.read_csv(osp.join(self.dataset_dir, 'yolov3_outputs/query_list.csv'))
+        else: 
+            self.query = pd.read_csv(csv)
 
         query = self._process_dir(self.images, self.query)
         gallery = self._process_dir(self.images, self.query)

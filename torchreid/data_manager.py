@@ -54,9 +54,10 @@ class SimpleImageDataManager(BaseDataManager):
                 test_batch_size=100,
                 workers=4,
                 data_augment='none',
-                cuhk03_labeled = False,
-                cuhk03_classic_split = False,
-                video = 'video_1'
+                cuhk03_labeled=False,
+                cuhk03_classic_split=False,
+                video='video_1',
+                csv=None,
                 ):
         super(SimpleImageDataManager, self).__init__()
         self.use_gpu = use_gpu
@@ -71,6 +72,7 @@ class SimpleImageDataManager(BaseDataManager):
         self.cuhk03_labeled = cuhk03_labeled
         self.cuhk03_classic_split = cuhk03_classic_split
         self.video = video
+        self.csv = csv
         self.pin_memory = True if use_gpu else False
 
         print("Making transforms")
@@ -83,7 +85,7 @@ class SimpleImageDataManager(BaseDataManager):
         for name in self.target_names:
             dataset = init_imgreid_dataset(
                 root=self.root, name=name, split_id=self.split_id, cuhk03_labeled=self.cuhk03_labeled,
-                cuhk03_classic_split=self.cuhk03_classic_split, video=self.video
+                cuhk03_classic_split=self.cuhk03_classic_split, video=self.video, csv = self.csv
             )
 
             self.testloader_dict[name]['query'] = DataLoader(

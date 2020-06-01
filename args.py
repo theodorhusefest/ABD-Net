@@ -26,6 +26,7 @@ def argument_parser():
                         help="sampler for trainloader")
     parser.add_argument('--data-augment', type=str, nargs='+', choices=['none', 'crop', 'random-erase', 'color-jitter', 'crop,random-erase', 'crop,color-jitter', 'crop,color-jitter,random-erase'], default='crop')
     parser.add_argument('--video', type= str, default='video_1', choices= ['video_1', 'video_2', 'video_3'])
+    parser.add_argument('--csv', type=str, help="csv-file with bounding-box info")
     # ************************************************************
     # Video datasets
     # ************************************************************
