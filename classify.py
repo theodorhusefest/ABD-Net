@@ -125,7 +125,7 @@ def main():
         galleryloader = testloader_dict[name]['gallery']
         distmat = classify_images(model, queryloader, galleryloader, use_gpu)
 
-        choose_images(distmat, dm.return_testdataset_by_name(name), save_dir= args.save_dir, video= args.video)
+        choose_images(distmat, dm.return_testdataset_by_name(name), rootdir=args.root, video= args.video)
 
 
 if __name__ == "__main__":

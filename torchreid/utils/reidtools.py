@@ -9,7 +9,7 @@ import shutil
 
 from .iotools import mkdir_if_missing
 
-def choose_images(distmat, dataset, save_dir='./output/', video='video_1'):
+def choose_images(distmat, dataset, rootdir='.', video='video_1'):
     """
     Choose images with low enough distance 'max_distance'
     
@@ -19,9 +19,10 @@ def choose_images(distmat, dataset, save_dir='./output/', video='video_1'):
     - save_dir
     """
     print("\Started sorting images")
+    save_dir = os.path.join(rootdir, '{}/abdnet_outputs'.format(video))
 
-    datasheet = pd.read_csv("./data/milestone3/{}/yolov3_outputs/query_list.csv".format(video))
-    datasheet['pid'] = -1
+    datasheet = pd.read_csv(os.path.join(rootdir, "{}/yolov3_outputs/query_list.csv".format(video)))
+    datasheet['ID'] = -1
 
     mkdir_if_missing(osp.join(save_dir, video))
 
@@ -47,7 +48,7 @@ def choose_images(distmat, dataset, save_dir='./output/', video='video_1'):
             mkdir_if_missing(person_dir)
 
             img_path = dataset[0][gallery_img][0]
-            datasheet.loc[datasheet['file_path'] == img_path, 'pid'] = pid
+            datasheet.loc[datasheet['file_path'] == img_path, 'ID'] = pid
 
             shutil.copy(img_path, person_dir + "/image{}.png".format(gallery_img))
             num_images += 1
@@ -59,14 +60,15 @@ def choose_images(distmat, dataset, save_dir='./output/', video='video_1'):
             
             person_dir = osp.join(save_dir, video, "person{}".format(pid))
             img_path = dataset[0][query_img][0]
-            datasheet.loc[datasheet['file_path'] == img_path, 'pid'] = pid
+            datasheet.loc[datasheet['file_path'] == img_path, 'ID'] = pid
 
             shutil.copy(img_path, person_dir + "/image{}.png".format(query_img))
 
             processed_images.add(query_img)
             num_images += 1
  
-    datasheet.to_csv( osp.join(save_dir,video) + "/{}_data.csv".format(video) )
+    # datasheet.to_csv( osp.join(save_dir,video) + "/{}_data.csv".format(video) )
+    datasheet.to_csv( os.path.join(rootdir, "{}/yolov3_outputs/query_list.csv".format(video)) )
     print("Sorted {} images, {} images in total".format(num_images, len(dataset[0])))
     
 
